@@ -1,0 +1,17 @@
+/// Pkl types for Apache APISIX configuration.
+amends "pkl:Project"
+
+package {
+  name = "apisix"
+  // Package version; the APISIX version is `Apisix.apisixVersion`.
+  version = "0.1.0"
+  baseUri = "package://github.com/akuchin/pkl-apisix/releases/download/\(name)@\(version)/\(name)"
+  packageZipUrl = "https://github.com/akuchin/pkl-apisix/releases/download/\(name)@\(version)/\(name)@\(version).zip"
+  authors { "Artem Kuchyn <aakuchin@gmail.com>" }
+  description = "Typed Pkl modules for Apache APISIX 3.19: routes, services, upstreams, consumers, SSL, all 128 plugins, standalone apisix.yaml."
+  license = "Apache-2.0"
+  sourceCode = "https://github.com/akuchin/pkl-apisix"
+  sourceCodeUrlScheme = "https://github.com/akuchin/pkl-apisix/blob/\(name)@\(version)/src%{path}#L%{line}-%{endLine}"
+  issueTracker = "https://github.com/akuchin/pkl-apisix/issues"
+  exclude { "PklProject"; "PklProject.deps.json" }
+}

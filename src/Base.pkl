@@ -1,0 +1,26 @@
+/// Base types shared by the generated modules.
+module apisix.Base
+
+/// An APISIX object that also accepts keys its schema does not name
+/// (for example the free-form `options` of the AI plugins).
+///
+/// Named keys are typed properties as usual; put any other key in [extra]:
+///
+/// ```
+/// options {
+///   model = "gpt-4o"
+///   extra { ["max_tokens"] = 512 }
+/// }
+/// ```
+///
+/// [extra] is merged into the object when it is rendered by `Standalone.pkl`, or by any
+/// renderer that uses [converters].
+abstract class OpenObject {
+  /// Keys the schema does not name. APISIX accepts them in this object.
+  hidden extra: Mapping<String, Any>?
+}
+
+/// Renderer converters that merge [OpenObject.extra] into the output.
+converters: Mapping<Class, (Any) -> Any> = new {
+  [OpenObject] = (o) -> o.toMap().filter((_, v) -> v != null) + (o.extra?.toMap() ?? Map())
+}

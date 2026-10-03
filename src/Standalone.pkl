@@ -1,0 +1,94 @@
+/// APISIX standalone configuration: `conf/apisix.yaml` for `deployment.role_data_plane.config_provider: yaml`.
+///
+/// Amend this module and evaluate it to get the YAML file APISIX reads, with the `#END` marker:
+///
+/// ```
+/// amends "package://.../apisix@<version>#/Standalone.pkl"
+///
+/// routes {
+///   new {
+///     uri = "/get"
+///     upstream { nodes = new Mapping { ["httpbin.org:80"] = 1 } }
+///   }
+/// }
+/// ```
+///
+/// All sections are optional. Cross-references (`upstream_id`, `service_id`, ...) are checked
+/// against the ids defined in this file.
+module apisix.Standalone
+
+import "Apisix.pkl"
+import "Base.pkl"
+import "Plugins.pkl"
+
+typealias Id = String|Int
+
+routes: Listing<Apisix.ValidRoute>?
+services: Listing<Apisix.Service>?
+upstreams: Listing<Apisix.ValidUpstream>?
+
+/// Consumers and their credentials.
+///
+/// A credential is an entry with `id = "<consumer username>/credentials/<credential id>"`.
+consumers: Listing<Apisix.Consumer|Apisix.Credential>?
+consumer_groups: Listing<Apisix.ConsumerGroup>?
+ssls: Listing<Apisix.ValidSsl>?
+global_rules: Listing<Apisix.GlobalRule>?
+plugin_configs: Listing<Apisix.PluginConfig>?
+protos: Listing<Apisix.Proto>?
+stream_routes: Listing<Apisix.ValidStreamRoute>?
+secrets: Listing<Apisix.VaultSecret|Apisix.AwsSecret|Apisix.ValidGcpSecret>?
+
+/// Plugins to enable. When set, this list replaces `plugins`/`stream_plugins` of config.yaml.
+plugins: Listing<Apisix.PluginEntry>?
+
+/// Plugin metadata, keyed by plugin name. Rendered as the `plugin_metadata` list (`id` = plugin name).
+plugin_metadata: Plugins.PluginMetadata?
+
+local function ids(items: Listing?): Set<Id> =
+  if (items == null) Set() else items.toList().map((it) -> it.getPropertyOrNull("id")).filterNonNull().toSet()
+
+local upstreamIds = ids(upstreams)
+local serviceIds = ids(services)
+local pluginConfigIds = ids(plugin_configs)
+local consumerGroupIds = ids(consumer_groups)
+
+local function label(kind: String, item: Any): String =
+  "\(kind) \"\(item.getPropertyOrNull("id") ?? item.getPropertyOrNull("username") ?? item.getPropertyOrNull("name") ?? "?")\""
+
+local function missing(kind: String, item: Any, field: String, known: Set<Id>): List<String> =
+  let (value = item.getPropertyOrNull(field))
+    if (value == null || known.contains(value)) List()
+    else List("\(label(kind, item)): \(field) \"\(value)\" is not defined")
+
+local function all(items: Listing?): List = items?.toList() ?? List()
+
+/// Check that `upstream_id`, `service_id`, `plugin_config_id` and `group_id` point to resources
+/// defined in this file. Turn off when the referenced resources are managed elsewhere.
+hidden checkReferences: Boolean = true
+
+/// Dangling references. Must be empty unless [checkReferences] is off.
+hidden referenceErrors: List<String>(!checkReferences || isEmpty) =
+  all(routes).flatMap((r) ->
+    missing("route", r, "upstream_id", upstreamIds) + missing("route", r, "service_id", serviceIds)
+      + missing("route", r, "plugin_config_id", pluginConfigIds))
+  + all(services).flatMap((s) -> missing("service", s, "upstream_id", upstreamIds))
+  + all(stream_routes).flatMap((r) ->
+    missing("stream route", r, "upstream_id", upstreamIds) + missing("stream route", r, "service_id", serviceIds))
+  + all(consumers).flatMap((c) ->
+    if (c is Apisix.Consumer) missing("consumer", c, "group_id", consumerGroupIds) else List())
+
+local function metadataList(m: Plugins.PluginMetadata): Listing = m.toMap()
+  .filter((_, conf) -> conf != null)
+  .map((name, conf) -> Pair(name, Map("id", name) + conf.toMap()))
+  .values
+  .toListing()
+
+output {
+  value = let (_ = referenceErrors)
+    module.toMap()
+      .filter((k, v) -> v != null && k != "plugin_metadata")
+    + (if (plugin_metadata == null) Map() else Map("plugin_metadata", metadataList(plugin_metadata!!)))
+  renderer = new YamlRenderer { converters = Base.converters }
+  text = super.text + "#END\n"
+}
