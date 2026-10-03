@@ -1,0 +1,4 @@
+// expect: "FETCH"
+amends "../../src/Standalone.pkl"
+routes { new { uri = "/a"; upstream_id = "u"; methods { "FETCH" } } }
+checkReferences = false

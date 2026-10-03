@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pyyaml
+      - name: Install Pkl
+        run: |
+          curl -fsSL -o /usr/local/bin/pkl https://github.com/apple/pkl/releases/download/0.32.1/pkl-linux-amd64
+          chmod +x /usr/local/bin/pkl
+          pkl --version
+      - name: Pull APISIX
+        run: docker pull apache/apisix:$(ls schema | sed -E 's/apisix-(.*)\.json/\1/' | sort -V | tail -1)-debian
+      - run: tools/test.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: |
+            CONFORMANCE.md
+            COVERAGE.md
+            build/examples/pkl/*.err

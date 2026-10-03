@@ -1,0 +1,4 @@
+// expect: Type constraint
+amends "../../src/Standalone.pkl"
+routes { new { uri = "/a"; host = "bad host!"; upstream_id = "u" } }
+checkReferences = false

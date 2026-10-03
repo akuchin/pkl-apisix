@@ -1,0 +1,4 @@
+// expect: redis_host
+amends "../../src/Standalone.pkl"
+routes { new { uri = "/a"; upstream_id = "u"; plugins { `limit-count` { count = 1; time_window = 60; policy = "redis" } } } }
+checkReferences = false

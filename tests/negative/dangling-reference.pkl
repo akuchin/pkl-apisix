@@ -1,0 +1,3 @@
+// expect: upstream_id \"missing\" is not defined
+amends "../../src/Standalone.pkl"
+routes { new { id = "r1"; uri = "/a"; upstream_id = "missing" } }

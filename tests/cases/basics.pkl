@@ -1,0 +1,84 @@
+// Routes, services, upstreams, plugin configs and global rules that reference each other.
+amends "../../src/Standalone.pkl"
+
+upstreams {
+  new {
+    id = "httpbin"
+    type = "roundrobin"
+    nodes = new Mapping { ["httpbin.org:80"] = 1 }
+    checks {
+      active {
+        http_path = "/status/200"
+        healthy { interval = 5; successes = 2 }
+        unhealthy { interval = 5; http_failures = 3 }
+      }
+    }
+  }
+  new {
+    id = "nodes-list"
+    // The default form of `nodes` is a list of node objects.
+    nodes {
+      new { host = "10.0.0.1"; port = 8080; weight = 1 }
+      new { host = "10.0.0.2"; port = 8080; weight = 2 }
+    }
+  }
+}
+
+services {
+  new {
+    id = "api"
+    upstream_id = "httpbin"
+    plugins {
+      `request-id` { header_name = "x-correlation-id"; include_in_response = true }
+    }
+  }
+}
+
+plugin_configs {
+  new {
+    id = "cors-open"
+    plugins { cors { allow_origins = "*" } }
+  }
+}
+
+global_rules {
+  new {
+    id = "metrics"
+    plugins { prometheus { prefer_name = true } }
+  }
+}
+
+routes {
+  new {
+    id = "get"
+    uri = "/get"
+    methods { "GET"; "HEAD" }
+    hosts { "api.example.com" }
+    service_id = "api"
+    plugin_config_id = "cors-open"
+    plugins {
+      `proxy-rewrite` {
+        regex_uri { "^/get(.*)"; "/anything$1" }
+        headers { set { ["X-Api-Version"] = "1" }; remove { "Cookie" } }
+      }
+      `limit-count` { count = 100; time_window = 60; key_type = "var"; key = "remote_addr" }
+    }
+  }
+  new {
+    id = "inline-upstream"
+    uris { "/a/*"; "/b/*" }
+    vars = new Listing { new Listing { "http_x_canary"; "=="; "true" } }
+    priority = 10
+    upstream { nodes = new Mapping { ["httpbin.org:443"] = 1 }; scheme = "https"; pass_host = "node" }
+    plugins {
+      // Plugins without settings.
+      `node-status` {}
+      `server-info` {}
+      inspect {}
+      `log-rotate` {}
+      ai {}
+      csrf { key = "edd1c9f034335f136f87ad84b625c8f1" }
+      `ext-plugin-post-req` { conf { new { name = "filter"; value = "{}" } } }
+    }
+  }
+}

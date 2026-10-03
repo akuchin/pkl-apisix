@@ -1,0 +1,4 @@
+// expect: Cannot find property `urii`
+amends "../../src/Standalone.pkl"
+routes { new { uri = "/a"; upstream_id = "u"; plugins { `proxy-rewrite` { urii = "/b" } } } }
+checkReferences = false

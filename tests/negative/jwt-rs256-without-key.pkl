@@ -1,0 +1,4 @@
+// expect: public_key
+amends "../../src/Standalone.pkl"
+import "../../src/Apisix.pkl"
+consumers { new Apisix.Consumer { username = "jack"; plugins { `jwt-auth` { key = "k"; algorithm = "RS256" } } } }

@@ -1,0 +1,25 @@
+// Types for a custom (Lua) plugin: extend Plugins and use the subclass on routes.
+// Pkl-only: the plugin does not exist in a stock APISIX.
+amends "../../src/Standalone.pkl"
+
+import "../../src/Plugins.pkl"
+
+local class HeaderGuard {
+  required_headers: Listing<String>(!isEmpty)
+  rejected_code: Int(isBetween(400, 599))?
+}
+
+local class MyPlugins extends Plugins.Plugins {
+  `header-guard`: HeaderGuard?
+}
+
+routes {
+  new {
+    uri = "/api/*"
+    plugins = new MyPlugins {
+      `header-guard` { required_headers { "X-Tenant"; "X-Request-Source" }; rejected_code = 400 }
+      `request-id` { header_name = "x-correlation-id" }
+    }
+    upstream { nodes = new Mapping { ["backend:8080"] = 1 } }
+  }
+}

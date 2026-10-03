@@ -1,0 +1,4 @@
+// expect: Cannot find property `extra`
+amends "../../src/Standalone.pkl"
+routes { new { uri = "/a"; upstream_id = "u"; extra { ["x"] = 1 } } }
+checkReferences = false

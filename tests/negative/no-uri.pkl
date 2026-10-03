@@ -1,0 +1,4 @@
+// expect: List(uri != null, uris != null).count((it) -> it) == 1
+amends "../../src/Standalone.pkl"
+routes { new { upstream_id = "u" } }
+checkReferences = false
