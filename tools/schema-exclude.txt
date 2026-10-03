@@ -1,0 +1,2 @@
+# Plugins that cannot start in a plain container. One name per line, then the reason.
+gm needs Tongsuo built into the APISIX runtime; schema added from tools/static-schemas/gm.json

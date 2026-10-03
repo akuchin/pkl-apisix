@@ -1,0 +1,4 @@
+{
+  "plugin": {"priority": -43, "version": 0.1, "schema": {"type": "object", "properties": {}}},
+  "ssl_properties": {"gm": {"type": "boolean"}}
+}
