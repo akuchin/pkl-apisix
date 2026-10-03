@@ -8,21 +8,21 @@ import "../Base.pkl" as Base
 import "../Common.pkl" as Common
 
 /// new headers for request
-open class ProxyRewriteHeadersOption1 {
+open class ProxyRewriteHeaders {
   add: Mapping<String, Any>(!isEmpty)?
   remove: Listing<String(contains(Regex(#"^[^:]+$"#)))>(!isEmpty)?
   set: Mapping<String, Any>(!isEmpty)?
 }
 
-/// [ProxyRewriteHeadersOption1] with the cross-field rules of the APISIX schema.
-typealias ValidProxyRewriteHeadersOption1 = ProxyRewriteHeadersOption1(
+/// [ProxyRewriteHeaders] with the cross-field rules of the APISIX schema.
+typealias ValidProxyRewriteHeaders = ProxyRewriteHeaders(
   List(add != null, remove != null, set != null).count((it) -> it) >= 1
 )
 
 open class ProxyRewrite extends Base.OpenObject {
   _meta: Common.PluginMeta?
   /// new headers for request
-  headers: (*ValidProxyRewriteHeadersOption1|Mapping<String, Any>(!isEmpty))?
+  headers: (*ValidProxyRewriteHeaders|Mapping<String, Any>(!isEmpty))?
   /// new host for upstream
   host: String(contains(Regex(#"^[0-9a-zA-Z-.]+(:\d{1,5})?$"#)))?
   /// proxy route method

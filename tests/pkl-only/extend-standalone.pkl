@@ -1,0 +1,12 @@
+// Amend a module that extends Standalone.
+amends "../support/MyGateway.pkl"
+
+env = "prod"
+
+routes {
+  new {
+    uri = "/get"
+    hosts { "api.prod.example.com" }
+    upstream { nodes = new Mapping { ["httpbin.org:80"] = 1 } }
+  }
+}

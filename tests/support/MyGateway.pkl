@@ -1,0 +1,14 @@
+// A user base module that extends Standalone with its own setting and check.
+open module test.MyGateway
+
+extends "../../src/Standalone.pkl"
+
+hidden env: "dev"|"prod"
+
+/// Every route host must belong to the environment.
+hidden hostErrors: List<String>(isEmpty) = (routes?.toList() ?? List())
+  .flatMap((r) -> (r.hosts?.toList() ?? List()).filter((h) -> !h.endsWith(".\(env).example.com")))
+
+output {
+  value = let (_ = hostErrors) super.value
+}

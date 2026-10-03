@@ -27,7 +27,7 @@ open class Upstream {
   /// key/value pairs to specify attributes
   labels: Mapping<String, Common.T>?
   name: String(length >= 1, length <= 256)?
-  nodes: (Mapping<String, Int(this >= 0)>|*Listing<Common.UpstreamNodesOption2Item>)?
+  nodes: (Mapping<String, Int(this >= 0)>|*Listing<Common.UpstreamNode>)?
   /// mod of host passing
   /// Default: `"pass"`
   pass_host: ("pass"|"node"|"rewrite")?

@@ -23,7 +23,7 @@ This version covers APISIX 3.19.0.
 ## Example
 
 ```pkl
-amends "package://github.com/akuchin/pkl-apisix/releases/download/apisix@0.1.0/apisix@0.1.0#/Standalone.pkl"
+amends "package://github.com/akuchin/pkl-apisix/releases/download/apisix@0.2.0/apisix@0.2.0#/Standalone.pkl"
 
 upstreams {
   new { id = "httpbin"; nodes = new Mapping { ["httpbin.org:80"] = 1 } }
@@ -81,7 +81,7 @@ For the other form, write the type: `nodes = new Mapping { ["host:80"] = 1 }`.
 Extend `Plugins.Plugins` to add types for your own plugins:
 
 ```pkl
-import "package://.../apisix@0.1.0#/Plugins.pkl"
+import "package://.../apisix@0.2.0#/Plugins.pkl"
 
 class MyPlugins extends Plugins.Plugins {
   `header-guard`: HeaderGuard?
@@ -90,6 +90,41 @@ class MyPlugins extends Plugins.Plugins {
 
 Then set `plugins = new MyPlugins { ... }` on a route.
 See [tests/pkl-only/custom-plugin.pkl](tests/pkl-only/custom-plugin.pkl).
+
+### Your own base module
+
+`Standalone.pkl` is an open module.
+Extend it to add your own settings and checks, then amend your module in each environment file:
+
+```pkl
+// lib/Gateway.pkl
+open module my.Gateway
+extends "@apisix/Standalone.pkl"
+
+hidden env: "dev"|"prod"
+```
+
+```pkl
+// env/prod.pkl
+amends "../lib/Gateway.pkl"
+env = "prod"
+routes { ... }
+```
+
+Declare your own properties as `hidden`, so they do not appear in `apisix.yaml`.
+
+### Check a file with a real APISIX
+
+`tools/apisix-check.sh` loads a rendered `apisix.yaml` into APISIX in Docker, with every plugin enabled.
+It fails if APISIX rejects an entry:
+
+```bash
+tools/apisix-check.sh 3.19.0 apisix.yaml
+```
+
+To include your own Lua plugins, give the directory with the `<name>.lua` files as a third argument.
+The script enables these plugins too, so APISIX also checks their configuration.
+The script sets a placeholder value for each `${{VAR}}` environment variable in the file.
 
 ### References to resources in other files
 

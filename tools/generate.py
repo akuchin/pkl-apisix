@@ -375,8 +375,9 @@ class Generator:
         for comb in ("oneOf", "anyOf"):
             if comb in s and all(isinstance(b, dict) and self.is_structural(b) for b in s[comb]):
                 base = {k: v for k, v in s.items() if k not in ("oneOf", "anyOf")}
+                # Branches share the property's name; Module.unique() numbers clashing classes.
                 parts = [
-                    self.type_of({**base, **b}, f"{hint}Option{i + 1}", mod, f"{path}|{i}")
+                    self.type_of({**base, **b}, hint, mod, f"{path}|{i}")
                     for i, b in enumerate(s[comb])
                 ]
                 return self.union(parts)

@@ -108,7 +108,7 @@ open class UpstreamKeepalivePool extends Base.OpenObject {
 /// value of label
 typealias T = String(length >= 1, length <= 256, contains(Regex(#"^\S+$"#)))
 
-open class UpstreamNodesOption2Item extends Base.OpenObject {
+open class UpstreamNode extends Base.OpenObject {
   host: String(contains(Regex(#"^\*$|^\*?[0-9a-zA-Z-._\[\]:]+$"#)))
   /// metadata of node
   metadata: Mapping<String, Any>?

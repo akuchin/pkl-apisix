@@ -1,0 +1,12 @@
+// expect: Type constraint `isEmpty` violated
+amends "../support/MyGateway.pkl"
+
+env = "prod"
+
+routes {
+  new {
+    uri = "/get"
+    hosts { "api.dev.example.com" }
+    upstream { nodes = new Mapping { ["httpbin.org:80"] = 1 } }
+  }
+}

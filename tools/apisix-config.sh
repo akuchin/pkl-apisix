@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 # Print a standalone config.yaml that enables every HTTP and stream plugin of an APISIX version.
-# Usage: tools/apisix-config.sh <apisix-version>
+# Usage: tools/apisix-config.sh <apisix-version> [custom plugin name ...]
+# Custom plugins are loaded from /usr/local/apisix/custom/apisix/plugins/<name>.lua.
 set -euo pipefail
 
-VERSION="${1:?usage: $0 <apisix-version>}"
+VERSION="${1:?usage: $0 <apisix-version> [custom plugin name ...]}"
+shift
+CUSTOM=("$@")
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="${ROOT}/.cache/apisix-${VERSION}"
 WORK="${ROOT}/.cache/fetch-${VERSION}"
@@ -28,7 +31,11 @@ apisix:
     ip: 0.0.0.0
     port: 9090
 YAML
+if [ "${#CUSTOM[@]}" -gt 0 ]; then
+  echo "  extra_lua_path: /usr/local/apisix/custom/?.lua"
+fi
 echo "plugins:"
 grep -v -x -F -f <(grep -v '^#' "${EXCLUDE}" | cut -d' ' -f1) "${WORK}/plugins.txt" | sed 's/^/  - /'
+for name in "${CUSTOM[@]+"${CUSTOM[@]}"}"; do echo "  - ${name}"; done
 echo "stream_plugins:"
 sed 's/^/  - /' "${WORK}/stream-plugins.txt"

@@ -32,20 +32,20 @@ None.
 
 ## Rejected by both
 
-- `ex25` certificate.md:48: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 25
-- `ex27` certificate.md:106: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 25
-- `ex41` http3.md:110: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 13
-- `ex43` mtls.md:123: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 30
+- `ex25` certificate.md:48: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 25
+- `ex27` certificate.md:106: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 25
+- `ex41` http3.md:110: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 14
+- `ex43` mtls.md:123: APISIX: failed to check item data of [ssls] err:property "client" validation failed: property "ca" validation failed: string too short, expected at least 128, got 26
 - `ex104` plugins/authz-casbin.md:171: APISIX: failed to check item data of [routes] err:failed to check the configuration of plugin authz-casbin err: value should match only one schema, but matches none
 - `ex240` plugins/graphql-limit-count.md:252: APISIX: failed to check item data of [services] err:additional properties forbidden, found mul_arguments
 - `ex241` plugins/graphql-limit-count.md:256: APISIX: failed to check item data of [services] err:additional properties forbidden, found mul_arguments
 - `ex385` plugins/mqtt-proxy.md:457: APISIX: failed to check item data of [stream_routes] err:property "sni" validation failed: failed to match pattern "^\\*$|^\\*?[0-9a-zA-Z-._\\[\\]:]+$" with "${your_sni_name}"
-- `ex395` plugins/ocsp-stapling.md:75: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 17
-- `ex396` plugins/ocsp-stapling.md:106: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 17
-- `ex543` ssl-protocol.md:94: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 17
-- `ex544` ssl-protocol.md:109: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 18
-- `ex545` ssl-protocol.md:208: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 17
-- `ex546` ssl-protocol.md:223: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 17
-- `ex594` tutorials/client-to-apisix-mtls.md:87: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 23
-- `ex597` tutorials/client-to-apisix-mtls.md:232: APISIX: failed to check item data of [ssls] err:property "key" validation failed: string too short, expected at least 64, got 27
+- `ex395` plugins/ocsp-stapling.md:75: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 17
+- `ex396` plugins/ocsp-stapling.md:106: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 17
+- `ex543` ssl-protocol.md:94: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 17
+- `ex544` ssl-protocol.md:109: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 18
+- `ex545` ssl-protocol.md:208: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 17
+- `ex546` ssl-protocol.md:223: APISIX: failed to check item data of [ssls] err:property "cert" validation failed: string too short, expected at least 128, got 17
+- `ex594` tutorials/client-to-apisix-mtls.md:87: APISIX: failed to check item data of [ssls] err:property "client" validation failed: property "ca" validation failed: string too short, expected at least 128, got 19
+- `ex597` tutorials/client-to-apisix-mtls.md:232: APISIX: failed to check item data of [ssls] err:property "client" validation failed: property "ca" validation failed: string too short, expected at least 128, got 23
 - `ex627` wasm.md:84: APISIX: failed to check item data of [routes] err:unknown plugin [wasm_log]

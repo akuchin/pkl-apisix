@@ -22,7 +22,7 @@ open class ResponseRewriteFilter extends Base.OpenObject {
 }
 
 /// new headers for response
-open class ResponseRewriteHeadersOption2 extends Base.OpenObject {
+open class ResponseRewriteHeaders extends Base.OpenObject {
   add: Listing<String(contains(Regex(#"^[^:]+:[^:]*[^/]$"#)))>(!isEmpty)?
   remove: Listing<String(contains(Regex(#"^[^:]+$"#)))>(!isEmpty)?
   set: Mapping<String, Any>(!isEmpty)?
@@ -38,7 +38,7 @@ open class ResponseRewrite extends Base.OpenObject {
   /// a group of filters that modify response bodyby replacing one specified string by another
   filters: Listing<ResponseRewriteFilter>(!isEmpty)?
   /// new headers for response
-  headers: (Mapping<String, Any>(!isEmpty)|*ResponseRewriteHeadersOption2)?
+  headers: (Mapping<String, Any>(!isEmpty)|*ResponseRewriteHeaders)?
   /// maximum response body size in bytes buffered into memory when filters are applied; larger responses are truncated
   /// Default: `67108864`
   max_resp_body_size: Int(this >= 1)?

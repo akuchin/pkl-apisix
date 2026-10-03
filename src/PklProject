@@ -4,7 +4,7 @@ amends "pkl:Project"
 package {
   name = "apisix"
   // Package version; the APISIX version is `Apisix.apisixVersion`.
-  version = "0.1.0"
+  version = "0.2.0"
   baseUri = "package://github.com/akuchin/pkl-apisix/releases/download/\(name)@\(version)/\(name)"
   packageZipUrl = "https://github.com/akuchin/pkl-apisix/releases/download/\(name)@\(version)/\(name)@\(version).zip"
   authors { "Artem Kuchyn <aakuchin@gmail.com>" }

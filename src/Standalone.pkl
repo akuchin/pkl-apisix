@@ -15,7 +15,10 @@
 ///
 /// All sections are optional. Cross-references (`upstream_id`, `service_id`, ...) are checked
 /// against the ids defined in this file.
-module apisix.Standalone
+///
+/// The module is open: extend it to add your own (hidden) settings and checks, then amend
+/// your module in each environment file.
+open module apisix.Standalone
 
 import "Apisix.pkl"
 import "Base.pkl"
